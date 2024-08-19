@@ -84,7 +84,7 @@ namespace SubRedditStats.Services
             {
                 try
                 {
-                    var token = await _tokenService.GetAuthTokenAsync();
+                    var token = await _tokenService.GetAuthTokenAsync(cancellationToken);
                    // _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                     if (!_urlPaginationMap.TryGetValue(url, out var after)) { 

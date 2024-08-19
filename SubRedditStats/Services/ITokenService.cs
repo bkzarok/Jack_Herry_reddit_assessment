@@ -15,7 +15,7 @@ namespace SubRedditStats.Services
         /// Gets the authentication Token asyncronously.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task<string> GetAuthTokenAsync();
+        Task<string> GetAuthTokenAsync(CancellationToken cancellationToken);
     }
 
 }

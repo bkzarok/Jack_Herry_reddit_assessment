@@ -12,7 +12,7 @@ namespace SubRedditStats.Services
     public interface IRateLimitingService
     {
         /// <summary>
-        /// Handles the Rate Limit
+        /// Handles Rate Limiting
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task HandleRateLimitingAsync(HttpResponseMessage response, CancellationToken cancellationToken);

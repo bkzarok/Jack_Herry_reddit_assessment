@@ -34,7 +34,7 @@ namespace SubRedditStats
             _semaphoreSlim = semaphoreSlim;
         }
 
-        public async Task<string> GetAuthTokenAsync()
+        public async Task<string> GetAuthTokenAsync(CancellationToken cancellation)
         {
             if (!string.IsNullOrEmpty(_authToken) && DateTime.UtcNow <= _tokenExpiryTime)
                 return _authToken;
@@ -44,7 +44,7 @@ namespace SubRedditStats
             if (string.IsNullOrEmpty(_authToken) || DateTime.UtcNow >= _tokenExpiryTime)
             {
                 _logger.LogInformation("Fetching a new authorization token...");
-                var tokenResponse = await FetchTokenAsync();
+                var tokenResponse = await FetchTokenAsync(cancellation);
 
                 if (tokenResponse != null)
                 {
@@ -59,10 +59,10 @@ namespace SubRedditStats
             return _authToken;
         }
 
-        private async Task<TokenResponse> FetchTokenAsync()
+        private async Task<TokenResponse> FetchTokenAsync(CancellationToken cancellation)
         {
             var tokenRequest = _tokenRequestBuilder.BuildTokenRequest();
-            var tokenResponse = await _httpClient.SendAsync(tokenRequest);
+            var tokenResponse = await _httpClient.SendAsync(tokenRequest, cancellation);
 
             if (tokenResponse.IsSuccessStatusCode)
             {

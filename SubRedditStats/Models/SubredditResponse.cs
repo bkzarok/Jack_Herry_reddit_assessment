@@ -38,14 +38,4 @@ namespace SubRedditStats.Models
         public string Title { get; set; }
         public string Author { get; set; }
     }
-
-  
-
-    //public string AuthorFullname { get; set; }
-    //public int pwls { get; set; }
-    //public int downs { get; set; }
-    //public float upvote_ratio { get; set; }
-    //public int ups { get; set; }
-    //public int score { get; set; }
-    //public string type { get; set; }
 }

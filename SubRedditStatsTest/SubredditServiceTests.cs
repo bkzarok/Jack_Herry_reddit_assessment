@@ -13,11 +13,12 @@ using Moq.Protected;
 using System.Threading;
 using Microsoft.Extensions.Options;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using SubRedditStats;
 
 namespace SubRedditStatsTest
 {
     [TestFixture]
-    public class SubredditServiceTests: IDisposable
+    public class SubredditServiceTests
     {
         private Mock<HttpClient> _httpClientMock;
         private Mock<ILogger<SubRedditService>> _loggerMock;
@@ -26,7 +27,7 @@ namespace SubRedditStatsTest
         private Mock<IOptions<AppSettings>> _appSettingsMock;
         private SubRedditService _subRedditService;
         private AppSettings _appSettings;
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationToken _cancellationToken;
 
         [SetUp]
         public void SetUp()
@@ -36,7 +37,7 @@ namespace SubRedditStatsTest
             _tokenServiceMock = new Mock<ITokenService>();
             _rateLimitingServiceMock = new Mock<IRateLimitingService>();
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
-            _cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = new CancellationToken();
 
             _appSettings = new AppSettings { SubRedditUrls = new List<string>{ "https://reddit.com/r/test" } };
             _appSettingsMock.Setup(x => x.Value).Returns(_appSettings);
@@ -45,7 +46,7 @@ namespace SubRedditStatsTest
         }      
 
         [Test]
-        public void GetSubRedditStats_ShouldReturnNull_WhenSubredditResponseIsNull()
+        public void SubRedditService_GetSubRedditStats_ShouldReturnNull_WhenSubredditResponseIsNull()
         {
             // Act
             var result = _subRedditService.GetSubRedditStats(null);
@@ -54,9 +55,32 @@ namespace SubRedditStatsTest
             Assert.IsNull(result);
         }
 
-        public void Dispose()
-        {           
-            _cancellationTokenSource.Dispose();
-        }       
+        [Test]
+        public void SubRedditService_GetSubRedditStats_ShouldReturnCorrectStats_WhenValidSubRedditResponse()
+        {
+            // Arrange
+            var subredditResponse = new SubredditResponse
+            {
+                Data = new Data
+                {
+                    Children = new List<Post>
+                    {
+                        new Post { Data = new PostData { Author = "author1", Ups = 100, Title = "Post1" } },
+                        new Post { Data = new PostData { Author = "author1", Ups = 200, Title = "Post2" } },
+                        new Post { Data = new PostData { Author = "author2", Ups = 50, Title = "Post3" } }
+                    }
+                }
+            };
+
+            // Act
+            var result = _subRedditService.GetSubRedditStats(subredditResponse);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.That(result.Author, Is.EqualTo("author1"));
+            Assert.That(result.PostCount, Is.EqualTo(2));
+            Assert.That(result.Post.Data.Title, Is.EqualTo("Post2"));
+            Assert.That(result.Post.Data.Ups, Is.EqualTo(200));
+        }
     }
 }

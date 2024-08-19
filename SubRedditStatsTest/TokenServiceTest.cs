@@ -23,6 +23,7 @@ namespace SubRedditStatsTest
         private  Mock<ITokenRequestBuilder> _tokenRequestBuilderMock;
         private  TokenService _tokenService;
         private  SemaphoreSlim _semaphore;
+        private CancellationToken _cancellationToken;
 
         [SetUp]
         public void SetUp()
@@ -31,7 +32,7 @@ namespace SubRedditStatsTest
             _loggerMock = new Mock<ILogger<TokenService>>();
             _tokenRequestBuilderMock = new Mock<ITokenRequestBuilder>();
             _semaphore = new SemaphoreSlim(1, 1);
-
+            _cancellationToken = new CancellationToken();
             _tokenService = new TokenService(_httpClientMock.Object, _loggerMock.Object, _tokenRequestBuilderMock.Object, _semaphore);
         }
 
@@ -44,7 +45,7 @@ namespace SubRedditStatsTest
             _tokenService.GetType().GetField("_tokenExpiryTime", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(_tokenService, DateTime.UtcNow.AddMinutes(5));
 
             // Act
-            var token = await _tokenService.GetAuthTokenAsync();
+            var token = await _tokenService.GetAuthTokenAsync(_cancellationToken);
 
             // Assert
             Assert.That(token, Is.EqualTo(expectedToken));
@@ -53,7 +54,7 @@ namespace SubRedditStatsTest
         public async Task TokenService_GetAuthTokenAsync_ReturnNewToken_WhenTokenIsNull()
         {            
             //act
-            var token = await _tokenService.GetAuthTokenAsync();
+            var token = await _tokenService.GetAuthTokenAsync(_cancellationToken);
 
             //Assert
             Assert.NotNull(token);
