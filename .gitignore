@@ -1,0 +1,8 @@
+bin/
+.vs
+Debug/
+Release/
+build/
+obj/
+appsettings.json
+Content/

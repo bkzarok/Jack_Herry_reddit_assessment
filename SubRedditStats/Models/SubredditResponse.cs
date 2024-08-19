@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace SubRedditStats.Models
+{
+    public class SubredditResponse
+    {
+        [JsonPropertyName("data")]
+        public Data Data { get; set; }     
+    }
+
+    public class Data
+    {
+        public string After { get; set; }
+        [JsonPropertyName("chidren")]
+        public List<Post> Children { get; set; }
+    }
+
+    public class Post
+    {
+        [JsonPropertyName("data")]
+        public PostData Data { get; set; }
+    }
+
+    public class PostData
+    {
+        [JsonPropertyName("author_fullname")]
+        public string Author_Fullname { get; set; }
+        [JsonPropertyName("ups")]
+        public int Ups { get; set; }
+        public int Downs { get; set; }
+        public int Pwls { get; set; }
+        public double Upvote_Ratio { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
+    }
+
+  
+
+    //public string AuthorFullname { get; set; }
+    //public int pwls { get; set; }
+    //public int downs { get; set; }
+    //public float upvote_ratio { get; set; }
+    //public int ups { get; set; }
+    //public int score { get; set; }
+    //public string type { get; set; }
+}
