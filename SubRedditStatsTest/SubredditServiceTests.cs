@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
-using Microsoft.Extensions.Logging;
 using SubRedditStats.Models;
 using SubRedditStats.Services;
-using Newtonsoft.Json;
-using System.Net;
-using Moq.Protected;
-using System.Threading;
-using Microsoft.Extensions.Options;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using SubRedditStats;
 
 namespace SubRedditStatsTest
 {
@@ -39,11 +28,11 @@ namespace SubRedditStatsTest
             _appSettingsMock = new Mock<IOptions<AppSettings>>();
             _cancellationToken = new CancellationToken();
 
-            _appSettings = new AppSettings { SubRedditUrls = new List<string>{ "https://reddit.com/r/test" } };
+            _appSettings = new AppSettings { SubRedditUrls = new List<string> { "https://reddit.com/r/test" } };
             _appSettingsMock.Setup(x => x.Value).Returns(_appSettings);
 
             _subRedditService = new SubRedditService(_httpClientMock.Object, _tokenServiceMock.Object, _loggerMock.Object, _rateLimitingServiceMock.Object, _appSettingsMock.Object);
-        }      
+        }
 
         [Test]
         public void SubRedditService_GetSubRedditStats_ShouldReturnNull_WhenSubredditResponseIsNull()

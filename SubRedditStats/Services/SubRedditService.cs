@@ -1,16 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SubRedditStats.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using System.Linq.Expressions;
 
 
 namespace SubRedditStats.Services
@@ -29,10 +22,10 @@ namespace SubRedditStats.Services
         private readonly AppSettings _appSettings;
         private readonly Timer _loggingTimer;
         private ConcurrentDictionary<string, int> _contentCount = new();
-        private  ConcurrentDictionary<string, string> _urlPaginationMap = new();
+        private ConcurrentDictionary<string, string> _urlPaginationMap = new();
         private Post _post = new Post();
         private PostData postData = new PostData { Ups = 0 };
-        private string _afterToken=null;
+        private string _afterToken = null;
 
 
         /// <summary>
@@ -72,22 +65,22 @@ namespace SubRedditStats.Services
             var numberOfUrl = _appSettings.SubRedditUrls.Count;
             numberOfThreads = Math.Min(numberOfThreads, numberOfUrl);
             var tasks = Enumerable.Range(0, numberOfThreads)
-                                  .Select(i => Task.Run(() => ProcessRequestsAsync(_appSettings.SubRedditUrls[i],cancellationToken), cancellationToken))
+                                  .Select(i => Task.Run(() => ProcessRequestsAsync(_appSettings.SubRedditUrls[i], cancellationToken), cancellationToken))
                                   .ToArray();
 
             await Task.WhenAll(tasks);
         }
 
-        public async Task ProcessRequestsAsync(string url,CancellationToken cancellationToken)
+        public async Task ProcessRequestsAsync(string url, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     var token = await _tokenService.GetAuthTokenAsync(cancellationToken);
-                   // _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                    if (!_urlPaginationMap.TryGetValue(url, out var after)) { 
+                    if (!_urlPaginationMap.TryGetValue(url, out var after))
+                    {
                         _urlPaginationMap.TryAdd(url, "");
                     }
                     var requestUrl = String.IsNullOrEmpty(after) ? url : $"{url}?after={after}";
@@ -102,7 +95,7 @@ namespace SubRedditStats.Services
                         var content = await response.Content.ReadAsStringAsync();
 
                         var subredditResponse = JsonConvert.DeserializeObject<SubredditResponse>(content);
-                        if(subredditResponse?.Data?.Children.Count == 0) continue;
+                        if (subredditResponse?.Data?.Children?.Count == 0) continue;
 
                         _urlPaginationMap[url] = subredditResponse?.Data?.After;
 
@@ -141,7 +134,7 @@ namespace SubRedditStats.Services
                 Console.Clear();
                 var keyOfMaxValue = _contentCount.MaxBy(entry => entry.Value);
                 Console.WriteLine($"\n\n***********Periodic Report*************\n\nPost with the most up votes:\n{_post.Data.Title}\nTotal Up Votes:{_post.Data.Ups}" +
-                    $"\nDowns:{_post.Data.Downs}\nPwls:{_post.Data.Pwls}\nUpvote_Ratio:{_post.Data.Upvote_Ratio}\n"+
+                    $"\nDowns:{_post.Data.Downs}\nPwls:{_post.Data.Pwls}\nUpvote_Ratio:{_post.Data.Upvote_Ratio}\n" +
                     $"\n\nUser with the most post:{keyOfMaxValue.Key}\nTotal Posts:{keyOfMaxValue.Value}");
             }
         }
@@ -165,15 +158,15 @@ namespace SubRedditStats.Services
                 .OrderByDescending(x => x.PostCount)
                 .FirstOrDefault();
 
-           var post = subredditResponse.Data.Children
-               .OrderByDescending(post => post.Data?.Ups)
-               .FirstOrDefault();
+            var post = subredditResponse.Data.Children
+                .OrderByDescending(post => post.Data?.Ups)
+                .FirstOrDefault();
 
-            if (authorPostCounts != null )
+            if (authorPostCounts != null)
             {
                 authorPostCounts.Post = post;
             }
-           
+
             return authorPostCounts;
         }
     }

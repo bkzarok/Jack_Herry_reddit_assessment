@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace SubRedditStats.Models
 {
     public class SubredditResponse
     {
         [JsonPropertyName("data")]
-        public Data Data { get; set; }     
+        public Data Data { get; set; }
     }
 
     public class Data

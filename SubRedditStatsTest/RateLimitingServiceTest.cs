@@ -1,16 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using SubRedditStats.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubRedditStatsTest
 {
     [TestFixture]
-    public  class RateLimitingServiceTest: IDisposable
+    public class RateLimitingServiceTest : IDisposable
     {
         private Mock<ILogger<RateLimitingService>> _loggerMock;
         private RateLimitingService _rateLimitingService;
@@ -40,7 +35,7 @@ namespace SubRedditStatsTest
             // Arrange
             var response = new HttpResponseMessage
             {
-                Headers = 
+                Headers =
                 {
                     { "X-Ratelimit-Remaining", "0" },
                     { "X-Ratelimit-Reset", "10" } // Reset after 10 seconds

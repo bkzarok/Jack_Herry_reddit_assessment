@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SubRedditStats.Services
+﻿namespace SubRedditStats.Services
 {
     /// <summary>
     /// Represents a TokenService

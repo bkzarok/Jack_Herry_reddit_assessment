@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubRedditStats.Services
 {
@@ -33,13 +28,13 @@ namespace SubRedditStats.Services
             if (response.Headers.Contains("X-Ratelimit-Remaining"))
             {
                 _rateLimitRemaining = Convert.ToInt16(Convert.ToDouble(
-                    response.Headers.GetValues("X-Ratelimit-Remaining").First()));               
+                    response.Headers.GetValues("X-Ratelimit-Remaining").First()));
             }
 
             if (response.Headers.Contains("X-Ratelimit-Reset"))
-            {               
+            {
                 _rateLimitReset = Convert.ToInt16(Convert.ToDouble(
-                    response.Headers.GetValues("X-Ratelimit-Reset").First()));              
+                    response.Headers.GetValues("X-Ratelimit-Reset").First()));
             }
 
             if (_rateLimitRemaining == 0)

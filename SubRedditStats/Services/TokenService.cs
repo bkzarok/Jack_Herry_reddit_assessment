@@ -10,7 +10,7 @@ namespace SubRedditStats
     /// </summary>
     public class TokenService : ITokenService
     {
-        
+
         private readonly HttpClient _httpClient;
         private readonly ILogger<TokenService> _logger;
         private readonly ITokenRequestBuilder _tokenRequestBuilder;

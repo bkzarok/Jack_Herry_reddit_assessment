@@ -1,28 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Moq.Protected;
-using Newtonsoft.Json;
 using SubRedditStats;
-using SubRedditStats.Models;
 using SubRedditStats.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubRedditStatsTest
 {
     [TestFixture]
-    public class TokenServiceTest: IDisposable
+    public class TokenServiceTest : IDisposable
     {
 
-        private  Mock<HttpClient> _httpClientMock;
-        private  Mock<ILogger<TokenService>> _loggerMock;
-        private  Mock<ITokenRequestBuilder> _tokenRequestBuilderMock;
-        private  TokenService _tokenService;
-        private  SemaphoreSlim _semaphore;
+        private Mock<HttpClient> _httpClientMock;
+        private Mock<ILogger<TokenService>> _loggerMock;
+        private Mock<ITokenRequestBuilder> _tokenRequestBuilderMock;
+        private TokenService _tokenService;
+        private SemaphoreSlim _semaphore;
         private CancellationToken _cancellationToken;
 
         [SetUp]
@@ -52,17 +43,17 @@ namespace SubRedditStatsTest
         }
 
         public async Task TokenService_GetAuthTokenAsync_ReturnNewToken_WhenTokenIsNull()
-        {            
+        {
             //act
             var token = await _tokenService.GetAuthTokenAsync(_cancellationToken);
 
             //Assert
             Assert.NotNull(token);
         }
-       
+
         public void Dispose()
         {
-            _semaphore.Dispose();         
+            _semaphore.Dispose();
         }
     }
 }
