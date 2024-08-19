@@ -100,7 +100,9 @@ namespace SubRedditStats.Services
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
+
                         var subredditResponse = JsonConvert.DeserializeObject<SubredditResponse>(content);
+                        if(subredditResponse?.Data?.Children.Count == 0) continue;
 
                         _urlPaginationMap[url] = subredditResponse?.Data?.After;
 
